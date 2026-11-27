@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>English Articulatory Phonetics Simulator</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --panel: #ffffff;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --accent: #0284c7;
+    --accent-soft: #e0f2fe;
+    --amber: #d97706;
+    --amber-soft: #fef3c7;
+    --emerald: #059669;
+    --rose: #e11d48;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.45;
+  }
+
+  .app {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 18px;
+  }
+
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  header p {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  button {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--ink);
+    padding: 7px 12px;
+    border-radius: 9px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  button:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  button.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.25fr 0.95fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 960px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+  }
+
+  .section-title {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+
+  .svg-wrap {
+    position: relative;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fcfdff;
+    overflow: hidden;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .drag-handle {
+    cursor: grab;
+  }
+
+  .drag-handle:active {
+    cursor: grabbing;
+  }
+
+  .hint-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .ipa-readout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--amber-soft);
+    border: 1px solid #fcd34d;
+    margin-bottom: 14px;
+  }
+
+  .ipa-symbol {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #92400e;
+    line-height: 1.1;
+  }
+
+  .ipa-meta {
+    text-align: right;
+  }
+
+  .ipa-name {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .ipa-desc {
+    font-size: 0.83rem;
+    color: #475569;
+  }
+
+  .presets-group {
+    margin-bottom: 14px;
+  }
+
+  .presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .preset-btn {
+    min-width: 44px;
+    padding: 6px 9px;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .sliders {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 560px) {
+    .sliders {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .slider-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 11px;
+  }
+
+  .slider-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .status-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .pill {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #334155;
+  }
+
+  .pill.on {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .pill.warn {
+    background: #ffe4e6;
+    color: #9f1239;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <h1>English Sagittal Vocal Tract Simulator</h1>
+      <p>Drag the tongue, lips, jaw, or velum directly on the diagram—or choose an English IPA preset.</p>
+    </div>
+    <div class="toolbar">
+      <button id="toggleLabelsBtn" class="active">Labels: ON</button>
+      <button id="toggleAirflowBtn" class="active">Airflow: ON</button>
+      <button id="resetBtn">Reset Neutral</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <div class="section-title">Sagittal Cross-Section (Facing Left)</div>
+      <div class="svg-wrap">
+        <svg id="vocalSvg" viewBox="0 0 680 450" aria-label="Interactive sagittal vocal tract diagram">
+          <defs>
+            <marker id="arrowOral" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#0284c7" />
+            </marker>
+            <marker id="arrowNasal" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#059669" />
+            </marker>
+            <marker id="arrowStop" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <circle cx="5" cy="5" r="3.5" fill="#e11d48" />
+            </marker>
+          </defs>
+
+          <!-- Background head silhouette -->
+          <path d="M 470 40
+                   Q 320 25 220 95
+                   Q 155 140 135 190
+                   L 95 212
+                   L 132 235
+                   Q 125 275 145 315
+                   Q 175 365 235 385
+                   L 255 438
+                   L 430 438
+                   L 445 340
+                   Q 480 220 470 40 Z"
+                fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2.5" />
+
+          <!-- Nasal cavity -->
+          <path d="M 420 95
+                   Q 310 80 215 128
+                   Q 185 145 182 172
+                   L 395 172
+                   Q 415 170 420 145 Z"
+                fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.8" />
+
+          <!-- Hard palate & Alveolar ridge -->
+          <path d="M 188 184
+                   Q 205 174 222 177
+                   Q 275 168 355 175
+                   L 355 188
+                   Q 275 182 222 189
+                   Q 204 189 188 194 Z"
+                fill="#fda4af" stroke="#e11d48" stroke-width="1.6" />
+
+          <!-- Upper teeth -->
+          <polygon points="168,186 184,186 182,208 170,208" fill="#ffffff" stroke="#475569" stroke-width="1.6" />
+
+          <!-- Pharynx back wall & Trachea -->
+          <path d="M 385 188 Q 405 265 392 435" fill="none" stroke="#94a3b8" stroke-width="14" stroke-linecap="round" />
+          <path d="M 385 188 Q 405 265 392 435" fill="none" stroke="#e2e8f0" stroke-width="10" stroke-linecap="round" />
+
+          <!-- Lower Jaw / Teeth group (dynamic Y) -->
+          <g id="jawGroup">
+            <path d="M 162 292
+                     Q 210 345 275 352
+                     Q 330 355 360 320
+                     L 365 345
+                     Q 325 382 265 376
+                     Q 200 368 154 308 Z"
+                  fill="#cbd5e1" stroke="#64748b" stroke-width="1.8" />
+            <polygon id="lowerTeeth" points="172,265 186,265 184,244 174,244" fill="#ffffff" stroke="#475569" stroke-width="1.6" />
+          </g>
+
+          <!-- Velum / Soft palate (dynamic) -->
+          <path id="velumPath" d="M 355 176 Q 378 178 394 198" fill="none" stroke="#fb7185" stroke-width="11" stroke-linecap="round" />
+
+          <!-- Tongue body & tip (dynamic) -->
+          <path id="tonguePath" d="M 205 235 Q 260 205 335 215 Q 375 225 382 285 L 235 292 Z"
+                fill="#f59e0b" fill-opacity="0.82" stroke="#b45309" stroke-width="2.2" />
+
+          <!-- Upper and Lower Lips (dynamic) -->
+          <path id="upperLipPath" d="M 168 192 Q 145 190 132 204 Q 146 212 168 206 Z"
+                fill="#fb7185" stroke="#be123c" stroke-width="1.6" />
+          <path id="lowerLipPath" d="M 168 242 Q 145 246 134 234 Q 148 225 168 230 Z"
+                fill="#fb7185" stroke="#be123c" stroke-width="1.6" />
+
+          <!-- Vocal folds at larynx -->
+          <g id="vocalFoldsGroup" style="cursor:pointer;">
+            <ellipse id="foldLeft" cx="378" cy="368" rx="9" ry="5" fill="#e11d48" />
+            <ellipse id="foldRight" cx="398" cy="368" rx="9" ry="5" fill="#e11d48" />
+            <path id="vibWave" d="M 366 378 Q 372 374 378 378 T 390 378 T 402 378" fill="none" stroke="#e11d48" stroke-width="2" />
+          </g>
+
+          <!-- Airflow arrows -->
+          <g id="airflowLayer">
+            <path id="oralAirArrow" d="M 388 345 Q 365 255 280 202 Q 210 185 118 220"
+                  fill="none" stroke="#0284c7" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#arrowOral)" />
+            <path id="nasalAirArrow" d="M 388 225 Q 382 150 325 132 Q 250 122 185 145"
+                  fill="none" stroke="#059669" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#arrowNasal)" />
+          </g>
+
+          <!-- Labels -->
+          <g id="labelsLayer" font-size="11.5" font-weight="700" fill="#1e293b">
+            <text x="235" y="114">Nasal Cavity</text>
+            <text x="242" y="163">Hard Palate</text>
+            <text x="196" y="165">Alveolar</text>
+            <text x="415" y="195">Velum</text>
+            <text x="412" y="280">Pharynx</text>
+            <text x="72" y="195">Lips</text>
+            <text x="115" y="176">Teeth</text>
+            <text x="414" y="372">Vocal Folds</text>
+          </g>
+
+          <!-- Draggable handles -->
+          <circle id="handleTongueTip" class="drag-handle" cx="205" cy="235" r="9" fill="#f59e0b" stroke="#ffffff" stroke-width="2.5" />
+          <circle id="handleTongueBody" class="drag-handle" cx="285" cy="216" r="9" fill="#d97706" stroke="#ffffff" stroke-width="2.5" />
+          <circle id="handleUpperLip" class="drag-handle" cx="145" cy="198" r="8" fill="#0284c7" stroke="#ffffff" stroke-width="2.2" />
+          <circle id="handleLowerLip" class="drag-handle" cx="146" cy="236" r="8" fill="#0ea5e9" stroke="#ffffff" stroke-width="2.2" />
+          <circle id="handleJaw" class="drag-handle" cx="268" cy="352" r="8.5" fill="#059669" stroke="#ffffff" stroke-width="2.2" />
+          <circle id="handleVelum" class="drag-handle" cx="376" cy="182" r="8" fill="#e11d48" stroke="#ffffff" stroke-width="2.2" />
+        </svg>
+      </div>
+      <div class="hint-bar">
+        <span><strong>Amber:</strong> Tongue Tip &amp; Body</span>
+        <span><strong>Blue:</strong> Upper &amp; Lower Lips</span>
+        <span><strong>Green:</strong> Jaw</span>
+        <span><strong>Red:</strong> Velum &amp; Vocal Folds</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ipa-readout">
+        <div>
+          <div id="ipaSymbol" class="ipa-symbol">/ə/</div>
+          <div id="ipaCategory" style="font-size:0.78rem;font-weight:700;color:#b45309;">Mid Central Vowel</div>
+        </div>
+        <div class="ipa-meta">
+          <div id="ipaName" class="ipa-name">Schwa (Neutral)</div>
+          <div id="ipaDesc" class="ipa-desc">Relaxed tongue, neutral lips, oral airflow</div>
+        </div>
+      </div>
+
+      <div class="presets-group">
+        <div class="section-title">English Consonants</div>
+        <div id="consonantPresets" class="presets"></div>
+      </div>
+
+      <div class="presets-group">
+        <div class="section-title">English Vowels</div>
+        <div id="vowelPresets" class="presets"></div>
+      </div>
+
+      <div class="section-title">Articulator Sliders</div>
+      <div class="sliders">
+        <div class="slider-box">
+          <div class="slider-top"><span>Tongue Front ↔ Back</span><span id="valTongueX">0</span></div>
+          <input id="sliderTongueX" type="range" min="-45" max="45" value="0" />
+        </div>
+        <div class="slider-box">
+          <div class="slider-top"><span>Tongue Height ↑ ↓</span><span id="valTongueY">0</span></div>
+          <input id="sliderTongueY" type="range" min="-45" max="40" value="0" />
+        </div>
+        <div class="slider-box">
+          <div class="slider-top"><span>Lip Rounding</span><span id="valLipRound">0</span></div>
+          <input id="sliderLipRound" type="range" min="-15" max="20" value="0" />
+        </div>
+        <div class="slider-box">
+          <div class="slider-top"><span>Jaw Opening</span><span id="valJaw">0</span></div>
+          <input id="sliderJaw" type="range" min="-12" max="28" value="0" />
+        </div>
+      </div>
+
+      <div class="toggles">
+        <button id="voicingBtn" class="active">Voiced (Vocal Folds ON)</button>
+        <button id="nasalBtn">Velum: Oral (Raised)</button>
+      </div>
+
+      <div class="status-pills" id="statusPills"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const state = {
+    tongueX: 0,     // -45 (back) to +45 (front/forward)
+    tongueY: 0,     // -45 (high/up) to +40 (low/down)
+    lipRound: 0,    // -15 (spread) to +20 (protruded/rounded)
+    lowerLipY: 0,   // -20 (raised toward upper teeth) to +18 (lowered)
+    jaw: 0,         // -12 (closed) to +28 (open)
+    velumOpen: false,
+    voiced: true,
+    showLabels: true,
+    showAirflow: true,
+    activePreset: "/ə/"
+  };
+
+  const PRESETS = [
+    // Consonants
+    { sym: "/p/", type: "consonant", name: "Voiceless Bilabial Plosive", desc: "Lips closed, oral stop, voiceless", state: { tongueX: 0, tongueY: 5, lipRound: 4, lowerLipY: -14, jaw: 0, velumOpen: false, voiced: false } },
+    { sym: "/b/", type: "consonant", name: "Voiced Bilabial Plosive", desc: "Lips closed, oral stop, voiced", state: { tongueX: 0, tongueY: 5, lipRound: 4, lowerLipY: -14, jaw: 0, velumOpen: false, voiced: true } },
+    { sym: "/t/", type: "consonant", name: "Voiceless Alveolar Plosive", desc: "Tongue tip at alveolar ridge, voiceless", state: { tongueX: 38, tongueY: -36, lipRound: 0, lowerLipY: 0, jaw: 2, velumOpen: false, voiced: false } },
+    { sym: "/d/", type: "consonant", name: "Voiced Alveolar Plosive", desc: "Tongue tip at alveolar ridge, voiced", state: { tongueX: 38, tongueY: -36, lipRound: 0, lowerLipY: 0, jaw: 2, velumOpen: false, voiced: true } },
+    { sym: "/k/", type: "consonant", name: "Voiceless Velar Plosive", desc: "Back of tongue raised to velum, voiceless", state: { tongueX: -36, tongueY: -38, lipRound: 0, lowerLipY: 0, jaw: 4, velumOpen: false, voiced: false } },
+    { sym: "/ɡ/", type: "consonant", name: "Voiced Velar Plosive", desc: "Back of tongue raised to velum, voiced", state: { tongueX: -36, tongueY: -38, lipRound: 0, lowerLipY: 0, jaw: 4, velumOpen: false, voiced: true } },
+    { sym: "/f/", type: "consonant", name: "Voiceless Labiodental Fricative", desc: "Lower lip near upper teeth, voiceless", state: { tongueX: 0, tongueY: 4, lipRound: -2, lowerLipY: -18, jaw: 2, velumOpen: false, voiced: false } },
+    { sym: "/v/", type: "consonant", name: "Voiced Labiodental Fricative", desc: "Lower lip near upper teeth, voiced", state: { tongueX: 0, tongueY: 4, lipRound: -2, lowerLipY: -18, jaw: 2, velumOpen: false, voiced: true } },
+    { sym: "/θ/", type: "consonant", name: "Voiceless Dental Fricative", desc: "Tongue tip near upper teeth, voiceless", state: { tongueX: 44, tongueY: -22, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: false } },
+    { sym: "/ð/", type: "consonant", name: "Voiced Dental Fricative", desc: "Tongue tip near upper teeth, voiced", state: { tongueX: 44, tongueY: -22, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: true } },
+    { sym: "/s/", type: "consonant", name: "Voiceless Alveolar Fricative", desc: "Narrow groove at alveolar ridge, voiceless", state: { tongueX: 36, tongueY: -28, lipRound: -4, lowerLipY: 0, jaw: -2, velumOpen: false, voiced: false } },
+    { sym: "/z/", type: "consonant", name: "Voiced Alveolar Fricative", desc: "Narrow groove at alveolar ridge, voiced", state: { tongueX: 36, tongueY: -28, lipRound: -4, lowerLipY: 0, jaw: -2, velumOpen: false, voiced: true } },
+    { sym: "/ʃ/", type: "consonant", name: "Voiceless Postalveolar Fricative", desc: "Tongue arched behind ridge, lips rounded", state: { tongueX: 20, tongueY: -32, lipRound: 12, lowerLipY: 0, jaw: 0, velumOpen: false, voiced: false } },
+    { sym: "/m/", type: "consonant", name: "Bilabial Nasal", desc: "Lips closed, velum lowered for nasal airflow", state: { tongueX: 0, tongueY: 6, lipRound: 3, lowerLipY: -14, jaw: 0, velumOpen: true, voiced: true } },
+    { sym: "/n/", type: "consonant", name: "Alveolar Nasal", desc: "Tongue at ridge, velum lowered for nasal airflow", state: { tongueX: 38, tongueY: -35, lipRound: 0, lowerLipY: 0, jaw: 2, velumOpen: true, voiced: true } },
+    { sym: "/ŋ/", type: "consonant", name: "Velar Nasal", desc: "Tongue back at velum, velum lowered", state: { tongueX: -36, tongueY: -36, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: true, voiced: true } },
+    { sym: "/l/", type: "consonant", name: "Alveolar Lateral Approximant", desc: "Tongue tip at ridge, sides let air pass", state: { tongueX: 38, tongueY: -34, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: true } },
+    { sym: "/r/", type: "consonant", name: "Post-Alveolar Approximant", desc: "Tongue bunched/curled back, slight lip rounding", state: { tongueX: 14, tongueY: -22, lipRound: 10, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: true } },
+    { sym: "/w/", type: "consonant", name: "Labial-Velar Approximant", desc: "Rounded protruded lips + raised tongue back", state: { tongueX: -32, tongueY: -32, lipRound: 18, lowerLipY: 0, jaw: 2, velumOpen: false, voiced: true } },
+    { sym: "/j/", type: "consonant", name: "Palatal Approximant", desc: "Tongue front raised toward hard palate", state: { tongueX: 24, tongueY: -36, lipRound: -6, lowerLipY: 0, jaw: -2, velumOpen: false, voiced: true } },
+
+    // Vowels
+    { sym: "/iː/", type: "vowel", name: "Close Front Unrounded Vowel", desc: "High front tongue, spread lips, open jaw", state: { tongueX: 28, tongueY: -35, lipRound: -12, lowerLipY: 4, jaw: -6, velumOpen: false, voiced: true } },
+    { sym: "/ɪ/", type: "vowel", name: "Near-Close Near-Front Vowel", desc: "Slightly lower/more centralized than /iː/", state: { tongueX: 16, tongueY: -22, lipRound: -5, lowerLipY: 4, jaw: 0, velumOpen: false, voiced: true } },
+    { sym: "/ɛ/", type: "vowel", name: "Open-Mid Front Unrounded Vowel", desc: "Mid-low front tongue, moderate jaw opening", state: { tongueX: 20, tongueY: 4, lipRound: -4, lowerLipY: 6, jaw: 10, velumOpen: false, voiced: true } },
+    { sym: "/æ/", type: "vowel", name: "Near-Open Front Unrounded Vowel", desc: "Low front tongue, wide jaw opening", state: { tongueX: 24, tongueY: 24, lipRound: -6, lowerLipY: 8, jaw: 20, velumOpen: false, voiced: true } },
+    { sym: "/ɑː/", type: "vowel", name: "Open Back Unrounded Vowel", desc: "Low back tongue, wide open jaw", state: { tongueX: -26, tongueY: 28, lipRound: 0, lowerLipY: 8, jaw: 24, velumOpen: false, voiced: true } },
+    { sym: "/ɔː/", type: "vowel", name: "Open-Mid Back Rounded Vowel", desc: "Mid-low back tongue, rounded lips", state: { tongueX: -28, tongueY: 6, lipRound: 14, lowerLipY: 6, jaw: 12, velumOpen: false, voiced: true } },
+    { sym: "/uː/", type: "vowel", name: "Close Back Rounded Vowel", desc: "High back tongue, rounded protruded lips", state: { tongueX: -32, tongueY: -34, lipRound: 18, lowerLipY: 4, jaw: -4, velumOpen: false, voiced: true } },
+    { sym: "/ə/", type: "vowel", name: "Mid Central Vowel (Schwa)", desc: "Relaxed neutral tongue and lips", state: { tongueX: 0, tongueY: 0, lipRound: 0, lowerLipY: 0, jaw: 0, velumOpen: false, voiced: true } }
+  ];
+
+  const svg = document.getElementById("vocalSvg");
+  const tonguePath = document.getElementById("tonguePath");
+  const upperLipPath = document.getElementById("upperLipPath");
+  const lowerLipPath = document.getElementById("lowerLipPath");
+  const jawGroup = document.getElementById("jawGroup");
+  const velumPath = document.getElementById("velumPath");
+  const vibWave = document.getElementById("vibWave");
+  const nasalAirArrow = document.getElementById("nasalAirArrow");
+  const oralAirArrow = document.getElementById("oralAirArrow");
+  const labelsLayer = document.getElementById("labelsLayer");
+  const airflowLayer = document.getElementById("airflowLayer");
+
+  const hTongueTip = document.getElementById("handleTongueTip");
+  const hTongueBody = document.getElementById("handleTongueBody");
+  const hUpperLip = document.getElementById("handleUpperLip");
+  const hLowerLip = document.getElementById("handleLowerLip");
+  const hJaw = document.getElementById("handleJaw");
+  const hVelum = document.getElementById("handleVelum");
+
+  const sliderTongueX = document.getElementById("sliderTongueX");
+  const sliderTongueY = document.getElementById("sliderTongueY");
+  const sliderLipRound = document.getElementById("sliderLipRound");
+  const sliderJaw = document.getElementById("sliderJaw");
+
+  function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
+  }
+
+  function renderPresets() {
+    const cWrap = document.getElementById("consonantPresets");
+    const vWrap = document.getElementById("vowelPresets");
+    cWrap.innerHTML = "";
+    vWrap.innerHTML = "";
+
+    PRESETS.forEach((p) => {
+      const btn = document.createElement("button");
+      btn.className = "preset-btn" + (state.activePreset === p.sym ? " active" : "");
+      btn.textContent = p.sym;
+      btn.title = p.name;
+      btn.addEventListener("click", () => {
+        Object.assign(state, p.state);
+        state.activePreset = p.sym;
+        updateUI();
+      });
+      if (p.type === "consonant") cWrap.appendChild(btn);
+      else vWrap.appendChild(btn);
+    });
+  }
+
+  function detectClosestPreset() {
+    let best = PRESETS[PRESETS.length - 1];
+    let bestScore = Infinity;
+
+    for (const p of PRESETS) {
+      const s = p.state;
+      const d =
+        Math.abs(state.tongueX - s.tongueX) * 1.1 +
+        Math.abs(state.tongueY - s.tongueY) * 1.2 +
+        Math.abs(state.lipRound - s.lipRound) * 1.3 +
+        Math.abs(state.lowerLipY - s.lowerLipY) * 1.1 +
+        Math.abs(state.jaw - s.jaw) * 0.9 +
+        (state.velumOpen === s.velumOpen ? 0 : 35) +
+        (state.voiced === s.voiced ? 0 : 22);
+
+      if (d < bestScore) {
+        bestScore = d;
+        best = p;
+      }
+    }
+    return best;
+  }
+
+  function updateUI() {
+    const jawY = state.jaw * 0.65;
+    jawGroup.setAttribute("transform", `translate(0, ${jawY})`);
+
+    const tipX = 205 + state.tongueX * 0.72;
+    const tipY = 235 + state.tongueY * 0.78 + jawY * 0.35;
+
+    const bodyX = 285 + state.tongueX * 0.55;
+    const bodyY = 216 + state.tongueY * 0.72 + jawY * 0.25;
+
+    const backX = 345 + state.tongueX * 0.25;
+    const backY = 218 + state.tongueY * 0.45;
+
+    const dTongue = `M ${tipX} ${tipY}
+                     Q ${(tipX + bodyX) / 2} ${Math.min(tipY, bodyY) - 18} ${bodyX} ${bodyY}
+                     Q ${(bodyX + backX) / 2} ${Math.min(bodyY, backY) - 14} ${backX} ${backY}
+                     Q 382 245 380 295
+                     L 235 302
+                     Q 212 272 ${tipX} ${tipY} Z`;
+    tonguePath.setAttribute("d", dTongue);
+
+    const lipShiftX = -state.lipRound * 0.65;
+    const uLipY = state.lipRound * 0.15;
+    const lLipY = state.lowerLipY * 0.7 + jawY * 0.45;
+
+    upperLipPath.setAttribute(
+      "d",
+      `M 168 ${192 + uLipY} Q ${145 + lipShiftX} ${190 + uLipY} ${132 + lipShiftX} ${204 + uLipY} Q ${146 + lipShiftX} ${212 + uLipY} 168 ${206 + uLipY} Z`
+    );
+
+    lowerLipPath.setAttribute(
+      "d",
+      `M 168 ${242 + lLipY} Q ${145 + lipShiftX} ${246 + lLipY} ${134 + lipShiftX} ${234 + lLipY} Q ${148 + lipShiftX} ${225 + lLipY} 168 ${230 + lLipY} Z`
+    );
+
+    const velumTipY = state.velumOpen ? 216 : 196;
+    const velumMidX = state.velumOpen ? 374 : 378;
+    const velumMidY = state.velumOpen ? 196 : 178;
+    velumPath.setAttribute("d", `M 355 176 Q ${velumMidX} ${velumMidY} 394 ${velumTipY}`);
+
+    // Handles
+    hTongueTip.setAttribute("cx", tipX);
+    hTongueTip.setAttribute("cy", tipY);
+    hTongueBody.setAttribute("cx", bodyX);
+    hTongueBody.setAttribute("cy", bodyY);
+    hUpperLip.setAttribute("cx", 145 + lipShiftX);
+    hUpperLip.setAttribute("cy", 198 + uLipY);
+    hLowerLip.setAttribute("cx", 146 + lipShiftX);
+    hLowerLip.setAttribute("cy", 236 + lLipY);
+    hJaw.setAttribute("cx", 268);
+    hJaw.setAttribute("cy", 352 + jawY);
+    hVelum.setAttribute("cx", 376);
+    hVelum.setAttribute("cy", state.velumOpen ? 198 : 181);
+
+    // Voicing & airflow
+    vibWave.style.opacity = state.voiced ? "1" : "0.15";
+    nasalAirArrow.style.opacity = state.velumOpen ? "1" : "0.15";
+    oralAirArrow.style.opacity = state.velumOpen ? "0.28" : "1";
+    labelsLayer.style.display = state.showLabels ? "block" : "none";
+    airflowLayer.style.display = state.showAirflow ? "block" : "none";
+
+    // Sync sliders
+    sliderTongueX.value = Math.round(state.tongueX);
+    sliderTongueY.value = Math.round(state.tongueY);
+    sliderLipRound.value = Math.round(state.lipRound);
+    sliderJaw.value = Math.round(state.jaw);
+
+    document.getElementById("valTongueX").textContent = Math.round(state.tongueX);
+    document.getElementById("valTongueY").textContent = Math.round(state.tongueY);
+    document.getElementById("valLipRound").textContent = Math.round(state.lipRound);
+    document.getElementById("valJaw").textContent = Math.round(state.jaw);
+
+    const vBtn = document.getElementById("voicingBtn");
+    vBtn.textContent = state.voiced ? "Voiced (Vocal Folds ON)" : "Voiceless (Vocal Folds OFF)";
+    vBtn.classList.toggle("active", state.voiced);
+
+    const nBtn = document.getElementById("nasalBtn");
+    nBtn.textContent = state.velumOpen ? "Velum: Nasal (Lowered)" : "Velum: Oral (Raised)";
+    nBtn.classList.toggle("active", state.velumOpen);
+
+    const closest = detectClosestPreset();
+    document.getElementById("ipaSymbol").textContent = closest.sym;
+    document.getElementById("ipaName").textContent = closest.name;
+    document.getElementById("ipaDesc").textContent = closest.desc;
+    document.getElementById("ipaCategory").textContent =
+      closest.type === "consonant" ? "English Consonant Match" : "English Vowel Match";
+
+    const pills = document.getElementById("statusPills");
+    pills.innerHTML = "";
+    const p1 = document.createElement("span");
+    p1.className = "pill " + (state.voiced ? "on" : "");
+    p1.textContent = state.voiced ? "Voiced" : "Voiceless";
+    const p2 = document.createElement("span");
+    p2.className = "pill " + (state.velumOpen ? "warn" : "on");
+    p2.textContent = state.velumOpen ? "Nasal Airflow" : "Oral Airflow";
+    pills.append(p1, p2);
+
+    renderPresets();
+  }
+
+  function svgPoint(evt) {
+    const pt = svg.createSVGPoint();
+    pt.x = evt.clientX;
+    pt.y = evt.clientY;
+    const ctm = svg.getScreenCTM();
+    return ctm ? pt.matrixTransform(ctm.inverse()) : { x: 250, y: 220 };
+  }
+
+  let activeDrag = null;
+
+  function attachDrag(el, name) {
+    el.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      el.setPointerCapture(e.pointerId);
+      activeDrag = name;
+      state.activePreset = null;
+    });
+  }
+
+  attachDrag(hTongueTip, "tongueTip");
+  attachDrag(hTongueBody, "tongueBody");
+  attachDrag(hUpperLip, "upperLip");
+  attachDrag(hLowerLip, "lowerLip");
+  attachDrag(hJaw, "jaw");
+  attachDrag(hVelum, "velum");
+
+  svg.addEventListener("pointermove", (e) => {
+    if (!activeDrag) return;
+    const p = svgPoint(e);
+
+    if (activeDrag === "tongueTip") {
+      state.tongueX = clamp((p.x - 205) / 0.72, -45, 45);
+      state.tongueY = clamp((p.y - 235) / 0.78, -45, 40);
+    } else if (activeDrag === "tongueBody") {
+      state.tongueX = clamp((p.x - 285) / 0.55, -45, 45);
+      state.tongueY = clamp((p.y - 216) / 0.72, -45, 40);
+    } else if (activeDrag === "upperLip") {
+      state.lipRound = clamp(-(p.x - 145) / 0.65, -15, 20);
+    } else if (activeDrag === "lowerLip") {
+      state.lowerLipY = clamp((p.y - 236) / 0.7, -20, 18);
+      state.lipRound = clamp(-(p.x - 146) / 0.65, -15, 20);
+    } else if (activeDrag === "jaw") {
+      state.jaw = clamp((p.y - 352) / 0.65, -12, 28);
+    } else if (activeDrag === "velum") {
+      state.velumOpen = p.y > 190;
+    }
+
+    updateUI();
+  });
+
+  svg.addEventListener("pointerup", () => {
+    activeDrag = null;
+  });
+
+  document.getElementById("vocalFoldsGroup").addEventListener("click", () => {
+    state.voiced = !state.voiced;
+    state.activePreset = null;
+    updateUI();
+  });
+
+  sliderTongueX.addEventListener("input", () => {
+    state.tongueX = Number(sliderTongueX.value);
+    state.activePreset = null;
+    updateUI();
+  });
+  sliderTongueY.addEventListener("input", () => {
+    state.tongueY = Number(sliderTongueY.value);
+    state.activePreset = null;
+    updateUI();
+  });
+  sliderLipRound.addEventListener("input", () => {
+    state.lipRound = Number(sliderLipRound.value);
+    state.activePreset = null;
+    updateUI();
+  });
+  sliderJaw.addEventListener("input", () => {
+    state.jaw = Number(sliderJaw.value);
+    state.activePreset = null;
+    updateUI();
+  });
+
+  document.getElementById("voicingBtn").addEventListener("click", () => {
+    state.voiced = !state.voiced;
+    state.activePreset = null;
+    updateUI();
+  });
+
+  document.getElementById("nasalBtn").addEventListener("click", () => {
+    state.velumOpen = !state.velumOpen;
+    state.activePreset = null;
+    updateUI();
+  });
+
+  document.getElementById("toggleLabelsBtn").addEventListener("click", (e) => {
+    state.showLabels = !state.showLabels;
+    e.currentTarget.textContent = "Labels: " + (state.showLabels ? "ON" : "OFF");
+    e.currentTarget.classList.toggle("active", state.showLabels);
+    updateUI();
+  });
+
+  document.getElementById("toggleAirflowBtn").addEventListener("click", (e) => {
+    state.showAirflow = !state.showAirflow;
+    e.currentTarget.textContent = "Airflow: " + (state.showAirflow ? "ON" : "OFF");
+    e.currentTarget.classList.toggle("active", state.showAirflow);
+    updateUI();
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    Object.assign(state, {
+      tongueX: 0,
+      tongueY: 0,
+      lipRound: 0,
+      lowerLipY: 0,
+      jaw: 0,
+      velumOpen: false,
+      voiced: true,
+      activePreset: "/ə/"
+    });
+    updateUI();
+  });
+
+  updateUI();
+</script>
+</body>
+</html>
