@@ -15,8 +15,6 @@
     --accent-soft: #e0f2fe;
     --amber: #d97706;
     --amber-soft: #fef3c7;
-    --emerald: #059669;
-    --rose: #e11d48;
   }
 
   * {
@@ -277,7 +275,7 @@
   <header>
     <div>
       <h1>English Sagittal Vocal Tract Simulator</h1>
-      <p>Drag the tongue, lips, jaw, or velum directly on the diagram—or choose an English IPA preset.</p>
+      <p>Drag the tongue, lips, jaw, or velum directly on the anatomical head diagram—or select an English IPA sound.</p>
     </div>
     <div class="toolbar">
       <button id="toggleLabelsBtn" class="active">Labels: ON</button>
@@ -288,9 +286,9 @@
 
   <div class="grid">
     <div class="card">
-      <div class="section-title">Sagittal Cross-Section (Facing Left)</div>
+      <div class="section-title">Anatomical Head &amp; Vocal Tract Cross-Section</div>
       <div class="svg-wrap">
-        <svg id="vocalSvg" viewBox="0 0 680 450" aria-label="Interactive sagittal vocal tract diagram">
+        <svg id="vocalSvg" viewBox="0 0 680 480" aria-label="Interactive anatomical sagittal vocal tract diagram">
           <defs>
             <marker id="arrowOral" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M 0 1 L 10 5 L 0 9 z" fill="#0284c7" />
@@ -298,108 +296,155 @@
             <marker id="arrowNasal" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M 0 1 L 10 5 L 0 9 z" fill="#059669" />
             </marker>
-            <marker id="arrowStop" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-              <circle cx="5" cy="5" r="3.5" fill="#e11d48" />
-            </marker>
+            <linearGradient id="skinGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fde6d8" />
+              <stop offset="100%" stop-color="#f5d0bc" />
+            </linearGradient>
+            <linearGradient id="tongueGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fb7185" />
+              <stop offset="100%" stop-color="#e11d48" />
+            </linearGradient>
           </defs>
 
-          <!-- Background head silhouette -->
-          <path d="M 470 40
-                   Q 320 25 220 95
-                   Q 155 140 135 190
-                   L 95 212
-                   L 132 235
-                   Q 125 275 145 315
-                   Q 175 365 235 385
-                   L 255 438
-                   L 430 438
-                   L 445 340
-                   Q 480 220 470 40 Z"
-                fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2.5" />
+          <!-- Realistic Anatomical Head & Neck Silhouette (Facing Left) -->
+          <path d="M 465 38
+                   C 375 22, 265 36, 215 92
+                   C 192 118, 184 142, 178 162
+                   L 134 206
+                   C 127 213, 132 221, 144 222
+                   L 170 224
+                   L 168 236
+                   L 150 242
+                   L 168 250
+                   L 168 274
+                   L 150 282
+                   L 168 292
+                   C 162 314, 166 334, 184 342
+                   C 208 352, 245 352, 275 356
+                   L 285 455
+                   L 445 455
+                   L 448 345
+                   C 482 275, 495 140, 465 38 Z"
+                fill="url(#skinGrad)" stroke="#c29b87" stroke-width="2.5" stroke-linejoin="round" />
 
-          <!-- Nasal cavity -->
-          <path d="M 420 95
-                   Q 310 80 215 128
-                   Q 185 145 182 172
-                   L 395 172
-                   Q 415 170 420 145 Z"
-                fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.8" />
+          <!-- Cranial / Upper Head Bone Structure Hint -->
+          <path d="M 435 65
+                   C 365 52, 280 65, 242 108
+                   C 228 124, 222 142, 220 156
+                   L 420 156
+                   C 435 130, 442 95, 435 65 Z"
+                fill="#f8fafc" fill-opacity="0.65" stroke="#cbd5e1" stroke-width="1.5" />
 
-          <!-- Hard palate & Alveolar ridge -->
-          <path d="M 188 184
-                   Q 205 174 222 177
-                   Q 275 168 355 175
-                   L 355 188
-                   Q 275 182 222 189
-                   Q 204 189 188 194 Z"
-                fill="#fda4af" stroke="#e11d48" stroke-width="1.6" />
+          <!-- Nasal Cavity (with Nostril opening on left) -->
+          <path d="M 146 214
+                   C 168 205, 195 182, 222 158
+                   C 265 132, 345 132, 398 160
+                   C 412 168, 418 182, 416 198
+                   L 368 198
+                   C 330 185, 255 185, 204 205
+                   C 182 212, 162 216, 146 214 Z"
+                fill="#ffe4e6" stroke="#fda4af" stroke-width="1.8" />
 
-          <!-- Upper teeth -->
-          <polygon points="168,186 184,186 182,208 170,208" fill="#ffffff" stroke="#475569" stroke-width="1.6" />
+          <!-- Oral & Pharyngeal Airway Cavity Background -->
+          <path d="M 168 232
+                   L 398 212
+                   L 414 455
+                   L 354 455
+                   L 348 325
+                   L 172 312 Z"
+                fill="#334155" />
 
-          <!-- Pharynx back wall & Trachea -->
-          <path d="M 385 188 Q 405 265 392 435" fill="none" stroke="#94a3b8" stroke-width="14" stroke-linecap="round" />
-          <path d="M 385 188 Q 405 265 392 435" fill="none" stroke="#e2e8f0" stroke-width="10" stroke-linecap="round" />
+          <!-- Hard Palate & Pronounced Alveolar Ridge -->
+          <path d="M 186 226
+                   C 198 224, 206 212, 220 212
+                   C 234 212, 244 200, 295 198
+                   C 330 197, 352 200, 366 204
+                   L 366 215
+                   C 345 212, 325 210, 295 211
+                   C 250 213, 238 225, 222 226
+                   C 208 227, 198 234, 186 235 Z"
+                fill="#fda4af" stroke="#be123c" stroke-width="1.6" />
 
-          <!-- Lower Jaw / Teeth group (dynamic Y) -->
+          <!-- Upper Incisor Tooth -->
+          <path d="M 174 227
+                   L 188 227
+                   L 187 252
+                   C 187 256, 177 256, 176 252 Z"
+                fill="#ffffff" stroke="#475569" stroke-width="1.7" />
+
+          <!-- Posterior Pharyngeal Wall & Esophagus/Trachea Divider -->
+          <path d="M 412 195
+                   C 420 265, 418 355, 416 455"
+                fill="none" stroke="#f43f5e" stroke-width="8" stroke-linecap="round" />
+
+          <!-- Lower Jaw, Chin & Lower Tooth Group (Dynamic Y) -->
           <g id="jawGroup">
-            <path d="M 162 292
-                     Q 210 345 275 352
-                     Q 330 355 360 320
-                     L 365 345
-                     Q 325 382 265 376
-                     Q 200 368 154 308 Z"
-                  fill="#cbd5e1" stroke="#64748b" stroke-width="1.8" />
-            <polygon id="lowerTeeth" points="172,265 186,265 184,244 174,244" fill="#ffffff" stroke="#475569" stroke-width="1.6" />
+            <!-- Lower Jaw / Chin Bone & Tissue -->
+            <path d="M 168 286
+                     C 164 312, 172 332, 194 338
+                     C 235 348, 295 346, 338 332
+                     L 348 455
+                     L 285 455
+                     L 276 356
+                     C 235 354, 195 352, 174 338
+                     C 160 328, 158 306, 168 286 Z"
+                  fill="url(#skinGrad)" stroke="#c29b87" stroke-width="2" />
+            <!-- Lower Incisor Tooth -->
+            <path d="M 177 294
+                   L 189 294
+                   L 188 271
+                   C 188 267, 179 267, 178 271 Z"
+                  fill="#ffffff" stroke="#475569" stroke-width="1.7" />
           </g>
 
-          <!-- Velum / Soft palate (dynamic) -->
-          <path id="velumPath" d="M 355 176 Q 378 178 394 198" fill="none" stroke="#fb7185" stroke-width="11" stroke-linecap="round" />
+          <!-- Velum / Soft Palate & Uvula (Dynamic) -->
+          <path id="velumPath" d="M 364 207 Q 388 208 405 224"
+                fill="none" stroke="#fb7185" stroke-width="12" stroke-linecap="round" />
 
-          <!-- Tongue body & tip (dynamic) -->
-          <path id="tonguePath" d="M 205 235 Q 260 205 335 215 Q 375 225 382 285 L 235 292 Z"
-                fill="#f59e0b" fill-opacity="0.82" stroke="#b45309" stroke-width="2.2" />
+          <!-- Tongue (Connected to Floor of Mouth & Pharynx Root) -->
+          <path id="tonguePath" d="M 205 268 Q 275 236 345 246 Q 375 268 368 350 L 222 330 Q 198 300 205 268 Z"
+                fill="url(#tongueGrad)" stroke="#9f1239" stroke-width="2.2" />
 
-          <!-- Upper and Lower Lips (dynamic) -->
-          <path id="upperLipPath" d="M 168 192 Q 145 190 132 204 Q 146 212 168 206 Z"
-                fill="#fb7185" stroke="#be123c" stroke-width="1.6" />
-          <path id="lowerLipPath" d="M 168 242 Q 145 246 134 234 Q 148 225 168 230 Z"
-                fill="#fb7185" stroke="#be123c" stroke-width="1.6" />
+          <!-- Upper and Lower Lips (Dynamic) -->
+          <path id="upperLipPath" d="M 174 224 C 160 222, 150 232, 150 241 C 150 247, 162 248, 174 242 Z"
+                fill="#f43f5e" stroke="#9f1239" stroke-width="1.6" />
+          <path id="lowerLipPath" d="M 174 288 C 160 290, 150 280, 150 271 C 150 265, 162 264, 174 270 Z"
+                fill="#f43f5e" stroke="#9f1239" stroke-width="1.6" />
 
-          <!-- Vocal folds at larynx -->
+          <!-- Vocal Folds at Larynx -->
           <g id="vocalFoldsGroup" style="cursor:pointer;">
-            <ellipse id="foldLeft" cx="378" cy="368" rx="9" ry="5" fill="#e11d48" />
-            <ellipse id="foldRight" cx="398" cy="368" rx="9" ry="5" fill="#e11d48" />
-            <path id="vibWave" d="M 366 378 Q 372 374 378 378 T 390 378 T 402 378" fill="none" stroke="#e11d48" stroke-width="2" />
+            <ellipse id="foldLeft" cx="372" cy="396" rx="11" ry="5.5" fill="#fda4af" stroke="#be123c" stroke-width="1.5" />
+            <ellipse id="foldRight" cx="396" cy="396" rx="11" ry="5.5" fill="#fda4af" stroke="#be123c" stroke-width="1.5" />
+            <path id="vibWave" d="M 360 409 Q 367 404 374 409 T 388 409 T 402 409" fill="none" stroke="#fde047" stroke-width="2.5" />
           </g>
 
-          <!-- Airflow arrows -->
+          <!-- Airflow Arrows -->
           <g id="airflowLayer">
-            <path id="oralAirArrow" d="M 388 345 Q 365 255 280 202 Q 210 185 118 220"
-                  fill="none" stroke="#0284c7" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#arrowOral)" />
-            <path id="nasalAirArrow" d="M 388 225 Q 382 150 325 132 Q 250 122 185 145"
-                  fill="none" stroke="#059669" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#arrowNasal)" />
+            <path id="oralAirArrow" d="M 384 375 Q 375 285 315 232 Q 245 215 122 256"
+                  fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#arrowOral)" />
+            <path id="nasalAirArrow" d="M 388 265 Q 388 188 335 162 Q 255 152 132 214"
+                  fill="none" stroke="#34d399" stroke-width="3" stroke-dasharray="6 4" marker-end="url(#arrowNasal)" />
           </g>
 
-          <!-- Labels -->
+          <!-- Anatomical Labels -->
           <g id="labelsLayer" font-size="11.5" font-weight="700" fill="#1e293b">
-            <text x="235" y="114">Nasal Cavity</text>
-            <text x="242" y="163">Hard Palate</text>
-            <text x="196" y="165">Alveolar</text>
-            <text x="415" y="195">Velum</text>
-            <text x="412" y="280">Pharynx</text>
-            <text x="72" y="195">Lips</text>
-            <text x="115" y="176">Teeth</text>
-            <text x="414" y="372">Vocal Folds</text>
+            <text x="275" y="152">Nasal Cavity</text>
+            <text x="268" y="191">Hard Palate</text>
+            <text x="195" y="202">Alveolar Ridge</text>
+            <text x="424" y="224">Velum</text>
+            <text x="424" y="310">Pharynx</text>
+            <text x="95" y="258">Lips</text>
+            <text x="122" y="236">Teeth</text>
+            <text x="424" y="400">Vocal Folds</text>
           </g>
 
-          <!-- Draggable handles -->
-          <circle id="handleTongueTip" class="drag-handle" cx="205" cy="235" r="9" fill="#f59e0b" stroke="#ffffff" stroke-width="2.5" />
-          <circle id="handleTongueBody" class="drag-handle" cx="285" cy="216" r="9" fill="#d97706" stroke="#ffffff" stroke-width="2.5" />
-          <circle id="handleUpperLip" class="drag-handle" cx="145" cy="198" r="8" fill="#0284c7" stroke="#ffffff" stroke-width="2.2" />
-          <circle id="handleLowerLip" class="drag-handle" cx="146" cy="236" r="8" fill="#0ea5e9" stroke="#ffffff" stroke-width="2.2" />
-          <circle id="handleJaw" class="drag-handle" cx="268" cy="352" r="8.5" fill="#059669" stroke="#ffffff" stroke-width="2.2" />
-          <circle id="handleVelum" class="drag-handle" cx="376" cy="182" r="8" fill="#e11d48" stroke="#ffffff" stroke-width="2.2" />
+          <!-- Draggable Handles -->
+          <circle id="handleTongueTip" class="drag-handle" cx="205" cy="268" r="9" fill="#f59e0b" stroke="#ffffff" stroke-width="2.5" />
+          <circle id="handleTongueBody" class="drag-handle" cx="285" cy="244" r="9" fill="#d97706" stroke="#ffffff" stroke-width="2.5" />
+          <circle id="handleUpperLip" class="drag-handle" cx="156" cy="236" r="8" fill="#0284c7" stroke="#ffffff" stroke-width="2.2" />
+          <circle id="handleLowerLip" class="drag-handle" cx="156" cy="276" r="8" fill="#0ea5e9" stroke="#ffffff" stroke-width="2.2" />
+          <circle id="handleJaw" class="drag-handle" cx="242" cy="342" r="8.5" fill="#059669" stroke="#ffffff" stroke-width="2.2" />
+          <circle id="handleVelum" class="drag-handle" cx="386" cy="212" r="8" fill="#e11d48" stroke="#ffffff" stroke-width="2.2" />
         </svg>
       </div>
       <div class="hint-bar">
@@ -464,11 +509,11 @@
 
 <script>
   const state = {
-    tongueX: 0,     // -45 (back) to +45 (front/forward)
-    tongueY: 0,     // -45 (high/up) to +40 (low/down)
-    lipRound: 0,    // -15 (spread) to +20 (protruded/rounded)
-    lowerLipY: 0,   // -20 (raised toward upper teeth) to +18 (lowered)
-    jaw: 0,         // -12 (closed) to +28 (open)
+    tongueX: 0,
+    tongueY: 0,
+    lipRound: 0,
+    lowerLipY: 0,
+    jaw: 0,
     velumOpen: false,
     voiced: true,
     showLabels: true,
@@ -477,36 +522,34 @@
   };
 
   const PRESETS = [
-    // Consonants
-    { sym: "/p/", type: "consonant", name: "Voiceless Bilabial Plosive", desc: "Lips closed, oral stop, voiceless", state: { tongueX: 0, tongueY: 5, lipRound: 4, lowerLipY: -14, jaw: 0, velumOpen: false, voiced: false } },
-    { sym: "/b/", type: "consonant", name: "Voiced Bilabial Plosive", desc: "Lips closed, oral stop, voiced", state: { tongueX: 0, tongueY: 5, lipRound: 4, lowerLipY: -14, jaw: 0, velumOpen: false, voiced: true } },
-    { sym: "/t/", type: "consonant", name: "Voiceless Alveolar Plosive", desc: "Tongue tip at alveolar ridge, voiceless", state: { tongueX: 38, tongueY: -36, lipRound: 0, lowerLipY: 0, jaw: 2, velumOpen: false, voiced: false } },
-    { sym: "/d/", type: "consonant", name: "Voiced Alveolar Plosive", desc: "Tongue tip at alveolar ridge, voiced", state: { tongueX: 38, tongueY: -36, lipRound: 0, lowerLipY: 0, jaw: 2, velumOpen: false, voiced: true } },
-    { sym: "/k/", type: "consonant", name: "Voiceless Velar Plosive", desc: "Back of tongue raised to velum, voiceless", state: { tongueX: -36, tongueY: -38, lipRound: 0, lowerLipY: 0, jaw: 4, velumOpen: false, voiced: false } },
-    { sym: "/ɡ/", type: "consonant", name: "Voiced Velar Plosive", desc: "Back of tongue raised to velum, voiced", state: { tongueX: -36, tongueY: -38, lipRound: 0, lowerLipY: 0, jaw: 4, velumOpen: false, voiced: true } },
-    { sym: "/f/", type: "consonant", name: "Voiceless Labiodental Fricative", desc: "Lower lip near upper teeth, voiceless", state: { tongueX: 0, tongueY: 4, lipRound: -2, lowerLipY: -18, jaw: 2, velumOpen: false, voiced: false } },
-    { sym: "/v/", type: "consonant", name: "Voiced Labiodental Fricative", desc: "Lower lip near upper teeth, voiced", state: { tongueX: 0, tongueY: 4, lipRound: -2, lowerLipY: -18, jaw: 2, velumOpen: false, voiced: true } },
-    { sym: "/θ/", type: "consonant", name: "Voiceless Dental Fricative", desc: "Tongue tip near upper teeth, voiceless", state: { tongueX: 44, tongueY: -22, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: false } },
-    { sym: "/ð/", type: "consonant", name: "Voiced Dental Fricative", desc: "Tongue tip near upper teeth, voiced", state: { tongueX: 44, tongueY: -22, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: true } },
-    { sym: "/s/", type: "consonant", name: "Voiceless Alveolar Fricative", desc: "Narrow groove at alveolar ridge, voiceless", state: { tongueX: 36, tongueY: -28, lipRound: -4, lowerLipY: 0, jaw: -2, velumOpen: false, voiced: false } },
-    { sym: "/z/", type: "consonant", name: "Voiced Alveolar Fricative", desc: "Narrow groove at alveolar ridge, voiced", state: { tongueX: 36, tongueY: -28, lipRound: -4, lowerLipY: 0, jaw: -2, velumOpen: false, voiced: true } },
-    { sym: "/ʃ/", type: "consonant", name: "Voiceless Postalveolar Fricative", desc: "Tongue arched behind ridge, lips rounded", state: { tongueX: 20, tongueY: -32, lipRound: 12, lowerLipY: 0, jaw: 0, velumOpen: false, voiced: false } },
-    { sym: "/m/", type: "consonant", name: "Bilabial Nasal", desc: "Lips closed, velum lowered for nasal airflow", state: { tongueX: 0, tongueY: 6, lipRound: 3, lowerLipY: -14, jaw: 0, velumOpen: true, voiced: true } },
-    { sym: "/n/", type: "consonant", name: "Alveolar Nasal", desc: "Tongue at ridge, velum lowered for nasal airflow", state: { tongueX: 38, tongueY: -35, lipRound: 0, lowerLipY: 0, jaw: 2, velumOpen: true, voiced: true } },
-    { sym: "/ŋ/", type: "consonant", name: "Velar Nasal", desc: "Tongue back at velum, velum lowered", state: { tongueX: -36, tongueY: -36, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: true, voiced: true } },
-    { sym: "/l/", type: "consonant", name: "Alveolar Lateral Approximant", desc: "Tongue tip at ridge, sides let air pass", state: { tongueX: 38, tongueY: -34, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: true } },
-    { sym: "/r/", type: "consonant", name: "Post-Alveolar Approximant", desc: "Tongue bunched/curled back, slight lip rounding", state: { tongueX: 14, tongueY: -22, lipRound: 10, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: true } },
-    { sym: "/w/", type: "consonant", name: "Labial-Velar Approximant", desc: "Rounded protruded lips + raised tongue back", state: { tongueX: -32, tongueY: -32, lipRound: 18, lowerLipY: 0, jaw: 2, velumOpen: false, voiced: true } },
-    { sym: "/j/", type: "consonant", name: "Palatal Approximant", desc: "Tongue front raised toward hard palate", state: { tongueX: 24, tongueY: -36, lipRound: -6, lowerLipY: 0, jaw: -2, velumOpen: false, voiced: true } },
+    { sym: "/p/", type: "consonant", name: "Voiceless Bilabial Plosive", desc: "Lips closed, oral stop, voiceless", state: { tongueX: 0, tongueY: 5, lipRound: 4, lowerLipY: -18, jaw: -4, velumOpen: false, voiced: false } },
+    { sym: "/b/", type: "consonant", name: "Voiced Bilabial Plosive", desc: "Lips closed, oral stop, voiced", state: { tongueX: 0, tongueY: 5, lipRound: 4, lowerLipY: -18, jaw: -4, velumOpen: false, voiced: true } },
+    { sym: "/t/", type: "consonant", name: "Voiceless Alveolar Plosive", desc: "Tongue tip at alveolar ridge, voiceless", state: { tongueX: 28, tongueY: -40, lipRound: 0, lowerLipY: 0, jaw: 2, velumOpen: false, voiced: false } },
+    { sym: "/d/", type: "consonant", name: "Voiced Alveolar Plosive", desc: "Tongue tip at alveolar ridge, voiced", state: { tongueX: 28, tongueY: -40, lipRound: 0, lowerLipY: 0, jaw: 2, velumOpen: false, voiced: true } },
+    { sym: "/k/", type: "consonant", name: "Voiceless Velar Plosive", desc: "Back of tongue raised to velum, voiceless", state: { tongueX: -38, tongueY: -42, lipRound: 0, lowerLipY: 0, jaw: 4, velumOpen: false, voiced: false } },
+    { sym: "/ɡ/", type: "consonant", name: "Voiced Velar Plosive", desc: "Back of tongue raised to velum, voiced", state: { tongueX: -38, tongueY: -42, lipRound: 0, lowerLipY: 0, jaw: 4, velumOpen: false, voiced: true } },
+    { sym: "/f/", type: "consonant", name: "Voiceless Labiodental Fricative", desc: "Lower lip near upper teeth, voiceless", state: { tongueX: 0, tongueY: 4, lipRound: -2, lowerLipY: -22, jaw: 0, velumOpen: false, voiced: false } },
+    { sym: "/v/", type: "consonant", name: "Voiced Labiodental Fricative", desc: "Lower lip near upper teeth, voiced", state: { tongueX: 0, tongueY: 4, lipRound: -2, lowerLipY: -22, jaw: 0, velumOpen: false, voiced: true } },
+    { sym: "/θ/", type: "consonant", name: "Voiceless Dental Fricative", desc: "Tongue tip near upper teeth, voiceless", state: { tongueX: 42, tongueY: -24, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: false } },
+    { sym: "/ð/", type: "consonant", name: "Voiced Dental Fricative", desc: "Tongue tip near upper teeth, voiced", state: { tongueX: 42, tongueY: -24, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: true } },
+    { sym: "/s/", type: "consonant", name: "Voiceless Alveolar Fricative", desc: "Narrow groove at alveolar ridge, voiceless", state: { tongueX: 28, tongueY: -32, lipRound: -4, lowerLipY: 0, jaw: -2, velumOpen: false, voiced: false } },
+    { sym: "/z/", type: "consonant", name: "Voiced Alveolar Fricative", desc: "Narrow groove at alveolar ridge, voiced", state: { tongueX: 28, tongueY: -32, lipRound: -4, lowerLipY: 0, jaw: -2, velumOpen: false, voiced: true } },
+    { sym: "/ʃ/", type: "consonant", name: "Voiceless Postalveolar Fricative", desc: "Tongue arched behind ridge, lips rounded", state: { tongueX: 16, tongueY: -34, lipRound: 12, lowerLipY: 0, jaw: 0, velumOpen: false, voiced: false } },
+    { sym: "/m/", type: "consonant", name: "Bilabial Nasal", desc: "Lips closed, velum lowered for nasal airflow", state: { tongueX: 0, tongueY: 6, lipRound: 3, lowerLipY: -18, jaw: -4, velumOpen: true, voiced: true } },
+    { sym: "/n/", type: "consonant", name: "Alveolar Nasal", desc: "Tongue at ridge, velum lowered for nasal airflow", state: { tongueX: 28, tongueY: -39, lipRound: 0, lowerLipY: 0, jaw: 2, velumOpen: true, voiced: true } },
+    { sym: "/ŋ/", type: "consonant", name: "Velar Nasal", desc: "Tongue back at velum, velum lowered", state: { tongueX: -38, tongueY: -40, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: true, voiced: true } },
+    { sym: "/l/", type: "consonant", name: "Alveolar Lateral Approximant", desc: "Tongue tip at ridge, sides let air pass", state: { tongueX: 28, tongueY: -38, lipRound: 0, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: true } },
+    { sym: "/r/", type: "consonant", name: "Post-Alveolar Approximant", desc: "Tongue bunched/curled back, slight lip rounding", state: { tongueX: 10, tongueY: -24, lipRound: 10, lowerLipY: 2, jaw: 4, velumOpen: false, voiced: true } },
+    { sym: "/w/", type: "consonant", name: "Labial-Velar Approximant", desc: "Rounded protruded lips + raised tongue back", state: { tongueX: -32, tongueY: -34, lipRound: 18, lowerLipY: 0, jaw: 2, velumOpen: false, voiced: true } },
+    { sym: "/j/", type: "consonant", name: "Palatal Approximant", desc: "Tongue front raised toward hard palate", state: { tongueX: 18, tongueY: -38, lipRound: -6, lowerLipY: 0, jaw: -2, velumOpen: false, voiced: true } },
 
-    // Vowels
-    { sym: "/iː/", type: "vowel", name: "Close Front Unrounded Vowel", desc: "High front tongue, spread lips, open jaw", state: { tongueX: 28, tongueY: -35, lipRound: -12, lowerLipY: 4, jaw: -6, velumOpen: false, voiced: true } },
-    { sym: "/ɪ/", type: "vowel", name: "Near-Close Near-Front Vowel", desc: "Slightly lower/more centralized than /iː/", state: { tongueX: 16, tongueY: -22, lipRound: -5, lowerLipY: 4, jaw: 0, velumOpen: false, voiced: true } },
-    { sym: "/ɛ/", type: "vowel", name: "Open-Mid Front Unrounded Vowel", desc: "Mid-low front tongue, moderate jaw opening", state: { tongueX: 20, tongueY: 4, lipRound: -4, lowerLipY: 6, jaw: 10, velumOpen: false, voiced: true } },
-    { sym: "/æ/", type: "vowel", name: "Near-Open Front Unrounded Vowel", desc: "Low front tongue, wide jaw opening", state: { tongueX: 24, tongueY: 24, lipRound: -6, lowerLipY: 8, jaw: 20, velumOpen: false, voiced: true } },
-    { sym: "/ɑː/", type: "vowel", name: "Open Back Unrounded Vowel", desc: "Low back tongue, wide open jaw", state: { tongueX: -26, tongueY: 28, lipRound: 0, lowerLipY: 8, jaw: 24, velumOpen: false, voiced: true } },
-    { sym: "/ɔː/", type: "vowel", name: "Open-Mid Back Rounded Vowel", desc: "Mid-low back tongue, rounded lips", state: { tongueX: -28, tongueY: 6, lipRound: 14, lowerLipY: 6, jaw: 12, velumOpen: false, voiced: true } },
-    { sym: "/uː/", type: "vowel", name: "Close Back Rounded Vowel", desc: "High back tongue, rounded protruded lips", state: { tongueX: -32, tongueY: -34, lipRound: 18, lowerLipY: 4, jaw: -4, velumOpen: false, voiced: true } },
+    { sym: "/iː/", type: "vowel", name: "Close Front Unrounded Vowel", desc: "High front tongue, spread lips, close jaw", state: { tongueX: 24, tongueY: -35, lipRound: -12, lowerLipY: 4, jaw: -4, velumOpen: false, voiced: true } },
+    { sym: "/ɪ/", type: "vowel", name: "Near-Close Near-Front Vowel", desc: "Slightly lower/more centralized than /iː/", state: { tongueX: 14, tongueY: -22, lipRound: -5, lowerLipY: 4, jaw: 0, velumOpen: false, voiced: true } },
+    { sym: "/ɛ/", type: "vowel", name: "Open-Mid Front Unrounded Vowel", desc: "Mid-low front tongue, moderate jaw opening", state: { tongueX: 18, tongueY: 4, lipRound: -4, lowerLipY: 6, jaw: 10, velumOpen: false, voiced: true } },
+    { sym: "/æ/", type: "vowel", name: "Near-Open Front Unrounded Vowel", desc: "Low front tongue, wide jaw opening", state: { tongueX: 20, tongueY: 22, lipRound: -6, lowerLipY: 8, jaw: 20, velumOpen: false, voiced: true } },
+    { sym: "/ɑː/", type: "vowel", name: "Open Back Unrounded Vowel", desc: "Low back tongue, wide open jaw", state: { tongueX: -24, tongueY: 24, lipRound: 0, lowerLipY: 8, jaw: 24, velumOpen: false, voiced: true } },
+    { sym: "/ɔː/", type: "vowel", name: "Open-Mid Back Rounded Vowel", desc: "Mid-low back tongue, rounded lips", state: { tongueX: -26, tongueY: 6, lipRound: 14, lowerLipY: 6, jaw: 12, velumOpen: false, voiced: true } },
+    { sym: "/uː/", type: "vowel", name: "Close Back Rounded Vowel", desc: "High back tongue, rounded protruded lips", state: { tongueX: -32, tongueY: -34, lipRound: 18, lowerLipY: 4, jaw: -2, velumOpen: false, voiced: true } },
     { sym: "/ə/", type: "vowel", name: "Mid Central Vowel (Schwa)", desc: "Relaxed neutral tongue and lips", state: { tongueX: 0, tongueY: 0, lipRound: 0, lowerLipY: 0, jaw: 0, velumOpen: false, voiced: true } }
   ];
 
@@ -586,64 +629,64 @@
     const jawY = state.jaw * 0.65;
     jawGroup.setAttribute("transform", `translate(0, ${jawY})`);
 
-    const tipX = 205 + state.tongueX * 0.72;
-    const tipY = 235 + state.tongueY * 0.78 + jawY * 0.35;
+    const tipX = 205 - state.tongueX * 0.68;
+    const tipY = 268 + state.tongueY * 0.78 + jawY * 0.35;
 
-    const bodyX = 285 + state.tongueX * 0.55;
-    const bodyY = 216 + state.tongueY * 0.72 + jawY * 0.25;
+    const bodyX = 285 - state.tongueX * 0.55;
+    const bodyY = 244 + state.tongueY * 0.75 + jawY * 0.25;
 
-    const backX = 345 + state.tongueX * 0.25;
-    const backY = 218 + state.tongueY * 0.45;
+    const backX = 348 - state.tongueX * 0.3;
+    const backY = 250 + state.tongueY * 0.5;
+
+    const floorY = 328 + jawY * 0.75;
 
     const dTongue = `M ${tipX} ${tipY}
-                     Q ${(tipX + bodyX) / 2} ${Math.min(tipY, bodyY) - 18} ${bodyX} ${bodyY}
+                     Q ${(tipX + bodyX) / 2} ${Math.min(tipY, bodyY) - 16} ${bodyX} ${bodyY}
                      Q ${(bodyX + backX) / 2} ${Math.min(bodyY, backY) - 14} ${backX} ${backY}
-                     Q 382 245 380 295
-                     L 235 302
-                     Q 212 272 ${tipX} ${tipY} Z`;
+                     Q 372 282 365 362
+                     L 292 346
+                     L 212 ${floorY}
+                     Q 192 ${(tipY + floorY) / 2} ${tipX} ${tipY} Z`;
     tonguePath.setAttribute("d", dTongue);
 
     const lipShiftX = -state.lipRound * 0.65;
     const uLipY = state.lipRound * 0.15;
-    const lLipY = state.lowerLipY * 0.7 + jawY * 0.45;
+    const lLipY = state.lowerLipY * 0.7 + jawY * 0.55;
 
     upperLipPath.setAttribute(
       "d",
-      `M 168 ${192 + uLipY} Q ${145 + lipShiftX} ${190 + uLipY} ${132 + lipShiftX} ${204 + uLipY} Q ${146 + lipShiftX} ${212 + uLipY} 168 ${206 + uLipY} Z`
+      `M 174 ${224 + uLipY} C ${160 + lipShiftX} ${222 + uLipY}, ${150 + lipShiftX} ${232 + uLipY}, ${150 + lipShiftX} ${241 + uLipY} C ${150 + lipShiftX} ${247 + uLipY}, ${162 + lipShiftX} ${248 + uLipY}, 174 ${242 + uLipY} Z`
     );
 
     lowerLipPath.setAttribute(
       "d",
-      `M 168 ${242 + lLipY} Q ${145 + lipShiftX} ${246 + lLipY} ${134 + lipShiftX} ${234 + lLipY} Q ${148 + lipShiftX} ${225 + lLipY} 168 ${230 + lLipY} Z`
+      `M 174 ${288 + lLipY} C ${160 + lipShiftX} ${290 + lLipY}, ${150 + lipShiftX} ${280 + lLipY}, ${150 + lipShiftX} ${271 + lLipY} C ${150 + lipShiftX} ${265 + lLipY}, ${162 + lipShiftX} ${264 + lLipY}, 174 ${270 + lLipY} Z`
     );
 
-    const velumTipY = state.velumOpen ? 216 : 196;
-    const velumMidX = state.velumOpen ? 374 : 378;
-    const velumMidY = state.velumOpen ? 196 : 178;
-    velumPath.setAttribute("d", `M 355 176 Q ${velumMidX} ${velumMidY} 394 ${velumTipY}`);
+    const velumTipY = state.velumOpen ? 244 : 222;
+    const velumMidX = state.velumOpen ? 384 : 388;
+    const velumMidY = state.velumOpen ? 224 : 208;
+    velumPath.setAttribute("d", `M 364 207 Q ${velumMidX} ${velumMidY} 405 ${velumTipY}`);
 
-    // Handles
     hTongueTip.setAttribute("cx", tipX);
     hTongueTip.setAttribute("cy", tipY);
     hTongueBody.setAttribute("cx", bodyX);
     hTongueBody.setAttribute("cy", bodyY);
-    hUpperLip.setAttribute("cx", 145 + lipShiftX);
-    hUpperLip.setAttribute("cy", 198 + uLipY);
-    hLowerLip.setAttribute("cx", 146 + lipShiftX);
-    hLowerLip.setAttribute("cy", 236 + lLipY);
-    hJaw.setAttribute("cx", 268);
-    hJaw.setAttribute("cy", 352 + jawY);
-    hVelum.setAttribute("cx", 376);
-    hVelum.setAttribute("cy", state.velumOpen ? 198 : 181);
+    hUpperLip.setAttribute("cx", 156 + lipShiftX);
+    hUpperLip.setAttribute("cy", 236 + uLipY);
+    hLowerLip.setAttribute("cx", 156 + lipShiftX);
+    hLowerLip.setAttribute("cy", 276 + lLipY);
+    hJaw.setAttribute("cx", 242);
+    hJaw.setAttribute("cy", 342 + jawY);
+    hVelum.setAttribute("cx", 386);
+    hVelum.setAttribute("cy", state.velumOpen ? 225 : 210);
 
-    // Voicing & airflow
     vibWave.style.opacity = state.voiced ? "1" : "0.15";
     nasalAirArrow.style.opacity = state.velumOpen ? "1" : "0.15";
     oralAirArrow.style.opacity = state.velumOpen ? "0.28" : "1";
     labelsLayer.style.display = state.showLabels ? "block" : "none";
     airflowLayer.style.display = state.showAirflow ? "block" : "none";
 
-    // Sync sliders
     sliderTongueX.value = Math.round(state.tongueX);
     sliderTongueY.value = Math.round(state.tongueY);
     sliderLipRound.value = Math.round(state.lipRound);
@@ -687,16 +730,21 @@
     pt.x = evt.clientX;
     pt.y = evt.clientY;
     const ctm = svg.getScreenCTM();
-    return ctm ? pt.matrixTransform(ctm.inverse()) : { x: 250, y: 220 };
+    return ctm ? pt.matrixTransform(ctm.inverse()) : { x: 250, y: 240 };
   }
 
-  let activeDrag = null;
+  let dragCtx = null;
 
   function attachDrag(el, name) {
     el.addEventListener("pointerdown", (e) => {
       e.preventDefault();
       el.setPointerCapture(e.pointerId);
-      activeDrag = name;
+      const startPt = svgPoint(e);
+      dragCtx = {
+        name,
+        startPt,
+        startState: { ...state }
+      };
       state.activePreset = null;
     });
   }
@@ -709,32 +757,38 @@
   attachDrag(hVelum, "velum");
 
   svg.addEventListener("pointermove", (e) => {
-    if (!activeDrag) return;
+    if (!dragCtx) return;
     const p = svgPoint(e);
+    const dx = p.x - dragCtx.startPt.x;
+    const dy = p.y - dragCtx.startPt.y;
+    const s0 = dragCtx.startState;
 
-    if (activeDrag === "tongueTip") {
-      state.tongueX = clamp((p.x - 205) / 0.72, -45, 45);
-      state.tongueY = clamp((p.y - 235) / 0.78, -45, 40);
-    } else if (activeDrag === "tongueBody") {
-      state.tongueX = clamp((p.x - 285) / 0.55, -45, 45);
-      state.tongueY = clamp((p.y - 216) / 0.72, -45, 40);
-    } else if (activeDrag === "upperLip") {
-      state.lipRound = clamp(-(p.x - 145) / 0.65, -15, 20);
-    } else if (activeDrag === "lowerLip") {
-      state.lowerLipY = clamp((p.y - 236) / 0.7, -20, 18);
-      state.lipRound = clamp(-(p.x - 146) / 0.65, -15, 20);
-    } else if (activeDrag === "jaw") {
-      state.jaw = clamp((p.y - 352) / 0.65, -12, 28);
-    } else if (activeDrag === "velum") {
-      state.velumOpen = p.y > 190;
+    if (dragCtx.name === "tongueTip") {
+      state.tongueX = clamp(s0.tongueX - dx / 0.68, -45, 45);
+      state.tongueY = clamp(s0.tongueY + dy / 0.78, -45, 40);
+    } else if (dragCtx.name === "tongueBody") {
+      state.tongueX = clamp(s0.tongueX - dx / 0.55, -45, 45);
+      state.tongueY = clamp(s0.tongueY + dy / 0.75, -45, 40);
+    } else if (dragCtx.name === "upperLip") {
+      state.lipRound = clamp(s0.lipRound - dx / 0.65, -15, 20);
+    } else if (dragCtx.name === "lowerLip") {
+      state.lowerLipY = clamp(s0.lowerLipY + dy / 0.7, -22, 18);
+      state.lipRound = clamp(s0.lipRound - dx / 0.65, -15, 20);
+    } else if (dragCtx.name === "jaw") {
+      state.jaw = clamp(s0.jaw + dy / 0.65, -12, 28);
+    } else if (dragCtx.name === "velum") {
+      state.velumOpen = p.y > 218;
     }
 
     updateUI();
   });
 
-  svg.addEventListener("pointerup", () => {
-    activeDrag = null;
-  });
+  function endDrag() {
+    dragCtx = null;
+  }
+
+  svg.addEventListener("pointerup", endDrag);
+  svg.addEventListener("pointercancel", endDrag);
 
   document.getElementById("vocalFoldsGroup").addEventListener("click", () => {
     state.voiced = !state.voiced;
